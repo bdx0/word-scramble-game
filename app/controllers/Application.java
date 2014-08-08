@@ -45,26 +45,31 @@ public class Application extends Controller {
 			Connection conn = getConnection();
 			Statement stmt = conn.createStatement();
 			ResultSet rs;
-			rs = stmt.executeQuery(String.format("SELECT word FROM dict WHERE word = '%s'", match_string));
-			if (rs.first()) {
+			rs = stmt.executeQuery(String.format(
+					"SELECT word FROM dict WHERE word = '%s'", match_string));
+			if (rs.next()) {
 				return ok(String.format("{ \"check\" : %s }", true));
 			}
 			conn.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Got an exception! ");
 			System.err.println(e.getMessage());
 		}
 		return ok(String.format("{ \"check\" : %s }", false));
 	}
 
-	private static Connection getConnection() throws URISyntaxException, SQLException {
+	private static Connection getConnection() throws URISyntaxException,
+			SQLException {
 		URI dbUri = new URI(System.getenv("DATABASE_URL"));
 
 		String username = dbUri.getUserInfo().split(":")[0];
 		String password = dbUri.getUserInfo().split(":")[1];
-		 String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
-//		String dbUrl = "jdbc:postgres://ec2-107-20-234-127.compute-1.amazonaws.com:5432/dfa6hc8mahc1u";
-//		return DriverManager.getConnection(dbUrl, "zfdlckheicvnni", "85ASUzJllQcoUSQC43qq0uFygg");
-		 return DriverManager.getConnection(dbUrl, username, password);
+		String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath() + "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory";
+		// String dbUrl =
+		// "jdbc:postgres://ec2-107-20-234-127.compute-1.amazonaws.com:5432/dfa6hc8mahc1u";
+		// return DriverManager.getConnection(dbUrl, "zfdlckheicvnni",
+		// "85ASUzJllQcoUSQC43qq0uFygg");
+		return DriverManager.getConnection(dbUrl, username, password);
 	}
 }
