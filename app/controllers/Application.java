@@ -21,23 +21,28 @@ public class Application extends Controller {
 	}
 
 	public static Result ajax() {
-		return ok("Here's my server-side data");
+		return ok("This is a scramble word game.");
 	}
 
 	public static Result suggest() {
+//            try {
+//			// if true, save the match_string with pair session
+//			Connection conn = getConnection();
+//			Statement stmt = conn.createStatement();
+//			ResultSet rs;
+//			rs = stmt.executeQuery(String.format(
+//					"SELECT word FROM dict WHERE word = '%s'", match_string));
+//			if (rs.next()) {
+//				return ok(String.format("{ \"check\" : %s }", true));
+//			}
+//			conn.close();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			System.err.println("Got an exception! ");
+//			System.err.println(e.getMessage());
+//		}
 		return ok("LLUPS");
 	}
-
-	private static List<String> dict = new ArrayList<String>() {
-		{
-			add("pus");
-			add("sup");
-			add("ups");
-			add("plus");
-			add("pull");
-			add("pulls");
-		}
-	};
 
 	public static Result check(String match_string) {
 		try {
@@ -46,7 +51,7 @@ public class Application extends Controller {
 			Statement stmt = conn.createStatement();
 			ResultSet rs;
 			rs = stmt.executeQuery(String.format(
-					"SELECT word FROM dict WHERE word = '%s'", match_string));
+					"SELECT word FROM dict WHERE word = '%s'", match_string.toLowerCase()));
 			if (rs.next()) {
 				return ok(String.format("{ \"check\" : %s }", true));
 			}
