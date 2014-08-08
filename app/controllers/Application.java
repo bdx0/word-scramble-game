@@ -62,9 +62,9 @@ public class Application extends Controller {
 
 		String username = dbUri.getUserInfo().split(":")[0];
 		String password = dbUri.getUserInfo().split(":")[1];
-		// String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
-		String dbUrl = "jdbc:postgres://ec2-107-20-234-127.compute-1.amazonaws.com:5432/dfa6hc8mahc1u";
-		return DriverManager.getConnection(dbUrl, "zfdlckheicvnni", "85ASUzJllQcoUSQC43qq0uFygg");
-		// return DriverManager.getConnection(dbUrl, "zfdlckheicvnni", password);
+		 String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
+//		String dbUrl = "jdbc:postgres://ec2-107-20-234-127.compute-1.amazonaws.com:5432/dfa6hc8mahc1u";
+//		return DriverManager.getConnection(dbUrl, "zfdlckheicvnni", "85ASUzJllQcoUSQC43qq0uFygg");
+		 return DriverManager.getConnection(dbUrl, username, password);
 	}
 }
