@@ -7,8 +7,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -24,23 +22,28 @@ public class Application extends Controller {
 		return ok("This is a scramble word game.");
 	}
 
+	private static String KEY_WORD_COLUMN = "word";
+	private static String KEY_DICT_TABLE = "dict";
+
 	public static Result suggest() {
-//            try {
-//			// if true, save the match_string with pair session
-//			Connection conn = getConnection();
-//			Statement stmt = conn.createStatement();
-//			ResultSet rs;
-//			rs = stmt.executeQuery(String.format(
-//					"SELECT word FROM dict WHERE word = '%s'", match_string));
-//			if (rs.next()) {
-//				return ok(String.format("{ \"check\" : %s }", true));
-//			}
-//			conn.close();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			System.err.println("Got an exception! ");
-//			System.err.println(e.getMessage());
-//		}
+		try {
+			// if true, save the match_string with pair session
+			Connection conn = getConnection();
+			Statement stmt = conn.createStatement();
+			ResultSet rs;
+			rs = stmt.executeQuery(String.format(
+					"SELECT %s FROM %s ORDER BY random() limit 1",
+					KEY_WORD_COLUMN, KEY_DICT_TABLE));
+			if (rs.next()) {
+				return ok(String.format("%s", rs.getString(KEY_WORD_COLUMN)
+						.trim().toUpperCase()));
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Got an exception! ");
+			System.err.println(e.getMessage());
+		}
 		return ok("LLUPS");
 	}
 
@@ -51,7 +54,8 @@ public class Application extends Controller {
 			Statement stmt = conn.createStatement();
 			ResultSet rs;
 			rs = stmt.executeQuery(String.format(
-					"SELECT word FROM dict WHERE word = '%s'", match_string.toLowerCase()));
+					"SELECT %s FROM %s WHERE word = '%s'", KEY_WORD_COLUMN,
+					KEY_DICT_TABLE, match_string.toLowerCase()));
 			if (rs.next()) {
 				return ok(String.format("{ \"check\" : %s }", true));
 			}
@@ -70,7 +74,10 @@ public class Application extends Controller {
 
 		String username = dbUri.getUserInfo().split(":")[0];
 		String password = dbUri.getUserInfo().split(":")[1];
-		String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath() + "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory";
+		String dbUrl = "jdbc:postgresql://"
+				+ dbUri.getHost()
+				+ dbUri.getPath()
+				+ "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory";
 		// String dbUrl =
 		// "jdbc:postgres://ec2-107-20-234-127.compute-1.amazonaws.com:5432/dfa6hc8mahc1u";
 		// return DriverManager.getConnection(dbUrl, "zfdlckheicvnni",
